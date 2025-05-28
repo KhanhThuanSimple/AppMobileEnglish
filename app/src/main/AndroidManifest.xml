@@ -26,31 +26,38 @@
             android:name=".activity.ForgotPasswordActivity"
             android:exported="true"
             android:theme="@style/Theme.AppEnglishNew">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="true"
             android:theme="@style/Theme.AppEnglishNew">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.AppEnglishNew">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppEnglishNew">
+
+        </activity>
+        <activity
+        android:name=".activity.ProgressActivity"
+        android:exported="true"
+        android:theme="@style/Theme.AppEnglishNew">
+
+    </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppEnglishNew">
+
         </activity>
     </application>
 

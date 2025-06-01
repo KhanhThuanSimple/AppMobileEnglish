@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "565353916625",
+    "project_id": "apptienganh-485de",
+    "storage_bucket": "apptienganh-485de.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565353916625:android:bb659e6ebce08f7f4bfdf0",
+        "android_client_info": {
+          "package_name": "com.example.appenglishnew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcxUdBM_KWq9bXk-NFNjS-Qcj2ER1GPuA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,28 +1,31 @@
 package com.example.appenglishnew.activity;
 
-
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.appenglishnew.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private TextInputLayout tilFullName, tilEmail, tilPassword, tilConfirmPassword;
     private TextInputEditText etFullName, etEmail, etPassword, etConfirmPassword;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-
 
         // Ánh xạ view
         tilFullName = findViewById(R.id.tilFullName);
@@ -35,16 +38,14 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
-        // Xử lý sự kiện đăng ký
+        mAuth = FirebaseAuth.getInstance();
+
         findViewById(R.id.btnRegister).setOnClickListener(v -> attemptRegister());
 
-        // Xử lý chuyển sang màn hình đăng nhập
         findViewById(R.id.tvLogin).setOnClickListener(v -> {
-            onBackPressed(); // Hoặc startActivity(new Intent(this, LoginActivity.class));
+            onBackPressed();
             finish();
-
         });
-
     }
 
     private void attemptRegister() {
@@ -99,24 +100,34 @@ public class RegisterActivity extends AppCompatActivity {
             // Thực hiện đăng ký
             registerUser(fullName, email, password);
         }
-
     }
 
     private void registerUser(String fullName, String email, String password) {
-        // Hiển thị progress bar
-        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Đăng ký thành công, cập nhật thêm tên hiển thị
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(fullName)
+                                    .build();
 
-        // TODO: Thực hiện logic đăng ký (API call, Firebase, SQLite...)
-        // Ví dụ mẫu:
-        new android.os.Handler().postDelayed(() -> {
-//            findViewById(R.id.progressBar).setVisibility(View.GONE);
-
-            // Giả lập đăng ký thành công
-            Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-
-            // Chuyển về màn hình đăng nhập
-            finish();
-        }, 1500);
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(profileTask -> {
+                                        if (profileTask.isSuccessful()) {
+                                            Toast.makeText(RegisterActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                                            finish(); // Quay lại màn hình đăng nhập
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, "Cập nhật hồ sơ thất bại", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Đăng ký thất bại: " + task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @Override

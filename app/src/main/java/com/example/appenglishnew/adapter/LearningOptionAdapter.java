@@ -17,12 +17,24 @@ import java.util.List;
 
 public class LearningOptionAdapter extends RecyclerView.Adapter<LearningOptionAdapter.ViewHolder> {
 
-    private final List<LearningOption> options;
     private final Context context;
+    private final List<LearningOption> optionList;
+    private final OnItemClickListener listener;
 
-    public LearningOptionAdapter(Context context, List<LearningOption> options) {
+    public interface OnItemClickListener {
+        void onItemClick(LearningOption option);
+    }
+
+    public LearningOptionAdapter(Context context, List<LearningOption> optionList, OnItemClickListener listener) {
         this.context = context;
-        this.options = options;
+        this.optionList = optionList;
+        this.listener = listener;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        LearningOption option = optionList.get(position);
+        holder.bind(option, listener);
     }
 
     @NonNull
@@ -32,18 +44,9 @@ public class LearningOptionAdapter extends RecyclerView.Adapter<LearningOptionAd
         return new ViewHolder(view);
     }
 
-
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LearningOption option = options.get(position);
-        holder.tvTitle.setText(option.getTitle());
-        holder.imgIcon.setImageResource(option.getIconResId());
-    }
-
     @Override
     public int getItemCount() {
-        return options.size();
+        return optionList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -55,5 +58,13 @@ public class LearningOptionAdapter extends RecyclerView.Adapter<LearningOptionAd
             imgIcon = itemView.findViewById(R.id.imgIcon);
             tvTitle = itemView.findViewById(R.id.tvTitle);
         }
+
+        public void bind(LearningOption option, OnItemClickListener listener) {
+            tvTitle.setText(option.getTitle());
+            imgIcon.setImageResource(option.getIconResId());
+
+            itemView.setOnClickListener(v -> listener.onItemClick(option));
+        }
     }
 }
+

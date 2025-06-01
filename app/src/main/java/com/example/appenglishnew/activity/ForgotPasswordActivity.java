@@ -1,5 +1,5 @@
 package com.example.appenglishnew.activity;
-import android.os.Handler;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,28 +13,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.appenglishnew.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     private TextInputLayout tilEmail;
     private TextInputEditText etEmail;
     private ProgressBar progressBar;
+    private FirebaseAuth auth;  // FirebaseAuth instance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgotpassword);
 
-        // Ánh xạ view
         tilEmail = findViewById(R.id.tilEmail);
         etEmail = findViewById(R.id.etEmail);
         progressBar = findViewById(R.id.progressBar);
 
-        // Xử lý sự kiện gửi yêu cầu
+        auth = FirebaseAuth.getInstance(); // Khởi tạo FirebaseAuth
+
         findViewById(R.id.btnSubmit).setOnClickListener(v -> validateEmail());
 
-        // Quay lại đăng nhập
         findViewById(R.id.tvBackToLogin).setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -54,25 +54,28 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
+        tilEmail.setError(null);
         sendResetPasswordEmail(email);
     }
 
     private void sendResetPasswordEmail(String email) {
         progressBar.setVisibility(View.VISIBLE);
 
-        // TODO: Thay thế bằng logic gửi email thực tế (Firebase, API...)
-        new Handler().postDelayed(() -> {
-            progressBar.setVisibility(View.GONE);
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    progressBar.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ForgotPasswordActivity.this, R.string.reset_link_sent, Toast.LENGTH_LONG).show();
 
-            // Giả lập thành công
-            Toast.makeText(this, R.string.reset_link_sent, Toast.LENGTH_LONG).show();
-
-            // Chuyển về màn hình đăng nhập sau 2 giây
-            new Handler().postDelayed(() -> {
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-            }, 2000);
-        }, 1500);
+                        // Chuyển về màn hình đăng nhập sau 2 giây
+                        new android.os.Handler().postDelayed(() -> {
+                            startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
+                            finish();
+                        }, 2000);
+                    } else {
+                        Toast.makeText(ForgotPasswordActivity.this, "Gửi email thất bại. Vui lòng kiểm tra lại email.", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @Override

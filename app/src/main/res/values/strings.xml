@@ -28,4 +28,7 @@
     <string name="back_to_login">Quay lại đăng nhập</string>
     <string name="reset_link_sent">Đã gửi liên kết đặt lại mật khẩu đến email của bạn</string>
     <string name="email_not_registered">Email chưa được đăng ký</string>
+    <string name="default_web_client_id">565353916625-cl4tl0kfig0mqvdtmahlj17uhs925sro.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">1234601365006214</string>
+    <string name="fb_login_protocol_scheme">fb1234601365006214</string>
 </resources>
